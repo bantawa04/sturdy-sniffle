@@ -1,18 +1,33 @@
-import express, { Request, Response, Application, NextFunction } from "express"
+import express, { Request, Response, Application } from "express"
 import http from "http"
 import { connectToDatabase } from "./database"
 import dotenv from 'dotenv';
+import morgan from "morgan"
 dotenv.config()
 import cors from "cors"
 
-// import bookRoute from "./routes/book"
 import batteryRoute from "./routes/battery"
+import * as fs from "fs";
+import path from "path";
 
 const app: Application = express()
 const server: http.Server = http.createServer(app)
 const port = process.env.APP_PORT || 8000
 
+const logFolderPath = path.join(__dirname, 'log');
+if (!fs.existsSync(logFolderPath)) {
+    fs.mkdirSync(logFolderPath);
+}
+
+const accessLogStream = fs.createWriteStream(path.join(logFolderPath, 'access.log'), { flags: 'a' });
+
 app.use(cors())
+app.use(morgan('combined', {
+    stream: accessLogStream,
+    skip: function (_, res) {
+        return res.statusCode < 400;
+    }
+}));
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
