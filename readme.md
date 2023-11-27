@@ -26,3 +26,14 @@ pnpm run  dev
 # or
 bun run dev
 ```
+Test(Jest):
+
+```bash
+npm test
+# or
+yarn test
+# or
+pnpm test
+# or
+bun test
+```

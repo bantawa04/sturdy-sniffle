@@ -54,9 +54,6 @@ app.get("/healthcheck", (_: Request, res: Response) => {
     res.json({ message: "OK", status: 200 })
 })
 
-
-
-// Options for the swagger-jsdoc
 const options = {
     swaggerDefinition,
     apis: [path.join(__dirname, 'routes/*.ts')], 
