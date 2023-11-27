@@ -10,6 +10,6 @@ export async function createBatteryService(
 }
 
 
-export async function getBatteryService(): Promise<Battery[]| { message: string }> {
+export async function getBatteryService(): Promise<Battery[]> {
   return getBatteries()
 }

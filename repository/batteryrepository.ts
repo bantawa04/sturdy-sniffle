@@ -19,10 +19,6 @@ export async function createBattery(
     return battery
 }
 
-export async function getBatteries(): Promise<Battery[] | { message: string }> {
-    const batteries = await prisma.battery.findMany()
-    if (batteries.length === 0) {
-        return { message: "No batteries found" }
-    }
-    return batteries
+export async function getBatteries(): Promise<Battery[]> {
+    return prisma.battery.findMany();
 }

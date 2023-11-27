@@ -16,14 +16,14 @@ export async function createBattery(
         const { name, postcode, wattCapacity } = req.body
 
         const errors = validationResult(req)
-        console.log(errors)
+
         if (!errors.isEmpty()) {
             const validationError = new CustomError(errors.array()[0].msg, 422)
-            console.log("validationError", validationError)
             throw validationError
         }
 
         const battery = await createBatteryService(name, postcode, wattCapacity)
+
         res.status(201).json(battery)
     } catch (error: any) {
         if (error?.statusCode) {
@@ -42,7 +42,14 @@ export async function getBatteries(
 ) {
     try {
         const batteries = await getBatteryService()
-        res.status(200).json(batteries)
+
+        const totalWattCapacity = batteries?.reduce((total, battery) => total + battery.wattCapacity, 0)
+        const averageWattCapacity = batteries.length > 0 ? totalWattCapacity / batteries.length : 0
+        res.status(200).json({
+            batteries,
+            totalWattCapacity,
+            averageWattCapacity
+        })
     } catch (error: any) {
         error = new CustomError("Internal Server Error", 500)
         next(error)

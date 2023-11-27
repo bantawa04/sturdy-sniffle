@@ -1,18 +1,28 @@
 import express, { Request, Response, Application, NextFunction } from "express"
 import http from "http"
 import { connectToDatabase } from "./database"
+import dotenv from 'dotenv';
+dotenv.config()
+import cors from "cors"
 
 // import bookRoute from "./routes/book"
 import batteryRoute from "./routes/battery"
 
 const app: Application = express()
 const server: http.Server = http.createServer(app)
-const port = 3000
+const port = process.env.APP_PORT || 8000
 
+app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 connectToDatabase()
+    .then(() => {
+        console.log("🚀 Connected to MongoDB")
+    })
+    .catch((error) => {
+        console.error("❌ Error connecting to MongoDB:", error)
+    });
 
 app.get("/healthcheck", (_: Request, res: Response) => {
     res.json({ message: "OK", status: 200 })
@@ -21,7 +31,7 @@ app.get("/healthcheck", (_: Request, res: Response) => {
 // app.use("/api", bookRoute)
 app.use("/api", batteryRoute)
 
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+app.use((error: any, req: Request, res: Response) => {
     const status = error.statusCode || 500
     const message = error.message || "Internal Server Error"
 
