@@ -1,0 +1,83 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Battery API",
+    "version": "1.0.0",
+    "description": "Battery API for frontend"
+  },
+  "servers": [
+    {
+      "url": "/api"
+    }
+  ],
+  "paths": {
+    "/battery": {
+      "post": {
+        "summary": "Create a new battery",
+        "tags": ["Batteries"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "postcode": {
+                    "type": "string"
+                  },
+                  "wattCapacity": {
+                    "type": "integer"
+                  }
+                },
+                "required": ["name", "postcode", "wattCapacity"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully created battery"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all batteries with additional information",
+        "tags": ["Batteries"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved batteries",
+            "content": {
+              "application/json": {
+                "example": {
+                  "batteries": [
+                    {
+                      "name": "Battery1",
+                      "postcode": "12345",
+                      "wattCapacity": 100
+                    },
+                    {
+                      "name": "Battery2",
+                      "postcode": "67890",
+                      "wattCapacity": 150
+                    }
+                  ],
+                  "totalWattCapacity": 250,
+                  "averageWattCapacity": 125
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  }
+}

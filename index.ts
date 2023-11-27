@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 import morgan from "morgan"
 dotenv.config()
 import cors from "cors"
-
+import  swaggerJsdoc from 'swagger-jsdoc';
+import  swaggerUi from 'swagger-ui-express';
 import batteryRoute from "./routes/battery"
 import * as fs from "fs";
 import path from "path";
@@ -13,6 +14,7 @@ import path from "path";
 const app: Application = express()
 const server: http.Server = http.createServer(app)
 const port = process.env.APP_PORT || 8000
+import swaggerDefinition from './swaggerDefinition.json';
 
 const logFolderPath = path.join(__dirname, 'logs');
 
@@ -52,7 +54,17 @@ app.get("/healthcheck", (_: Request, res: Response) => {
     res.json({ message: "OK", status: 200 })
 })
 
-// app.use("/api", bookRoute)
+
+
+// Options for the swagger-jsdoc
+const options = {
+    swaggerDefinition,
+    apis: [path.join(__dirname, 'routes/*.ts')], 
+}
+const swaggerSpec = swaggerJsdoc(options);
+
+app.use('/api/docs', swaggerUi.serve);
+app.get('/api/docs', swaggerUi.setup(swaggerSpec));
 app.use("/api", batteryRoute)
 
 app.use((error: any, req: Request, res: Response, next: Function) => {
