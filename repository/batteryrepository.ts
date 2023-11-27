@@ -20,5 +20,9 @@ export async function createBattery(
 }
 
 export async function getBatteries(): Promise<Battery[]> {
-    return prisma.battery.findMany();
+    return prisma.battery.findMany({
+        orderBy: {
+            name: 'asc',
+        },
+    });
 }
